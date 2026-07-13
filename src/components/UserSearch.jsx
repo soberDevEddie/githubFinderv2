@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import {FaGithubAlt} from 'react-icons/fa';
 
 const UserSearch = () => {
   const [username, setUsername] = useState('');
@@ -40,7 +41,19 @@ const UserSearch = () => {
       {isLoading && <p className='status'>Loading...</p>}
       {isError && <p className='status error'>{error.message}...</p>}
       {data && (
-      
+        <div className='user-card'>
+          <img className='avatar' src={data.avatar_url} alt={data.name} />
+          <h2 className='name'>{data.name || data.login}</h2>
+          <p className='bio'>{data.bio || 'No bio available.'}</p>
+          <a
+            href={data.html_url}
+            className='profile-btn'
+            target='_blank'
+            rel='noopener noreferrer'
+          >
+           <FaGithubAlt/> View Profile
+          </a>
+        </div>
       )}
     </>
   );
