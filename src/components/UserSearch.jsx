@@ -42,7 +42,9 @@ const UserSearch = () => {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
-        <button type='submit'>Search</button>
+        <button type='submit' className='btn'>
+          Search
+        </button>
       </form>
       {isLoading && <p className='status'>Loading...</p>}
       {isError && <p className='status error'>{error.message}...</p>}
