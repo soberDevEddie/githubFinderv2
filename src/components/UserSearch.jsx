@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 // My files
@@ -9,7 +9,10 @@ import RecentSearches from '../components/RecentSearches';
 const UserSearch = () => {
   const [username, setUsername] = useState('');
   const [submittedUsername, setSubmittedUsername] = useState('');
-  const [recentUsers, setRecentUsers] = useState([]);
+  const [recentUsers, setRecentUsers] = useState(() => {
+    const storedUsers = localStorage.getItem('recentUsers');
+    return storedUsers ? JSON.parse(storedUsers) : [];
+  });
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ['user', submittedUsername],
@@ -32,6 +35,10 @@ const UserSearch = () => {
       return updatedUsers.slice(0, 5);
     });
   };
+
+  useEffect(() => {
+    localStorage.setItem('recentUsers', JSON.stringify(recentUsers));
+  }, [recentUsers]);
 
   return (
     <>
