@@ -6,6 +6,7 @@ import { useDebounce } from 'use-debounce';
 import { fetchGithubUser, searchGithubUser } from '../api/github';
 import UserCard from '../components/UserCard';
 import RecentSearches from '../components/RecentSearches';
+import SuggestionsDropdown from './SuggestionsDropdown';
 
 const UserSearch = () => {
   const [username, setUsername] = useState('');
@@ -66,30 +67,27 @@ const UserSearch = () => {
             }}
           />
           {showSuggestions && suggestions?.length > 0 && (
-            <ul className='suggestions'>
-              {suggestions.slice(0, 5).map((user) => (
-                <li
-                  key={user.id}
-                  onClick={() => {
-                    setUsername(user.login);
-                    setShowSuggestions(false);
+            <SuggestionsDropdown
+              suggestions={suggestions}
+              show={showSuggestions}
+              onSelect={(selected) => {
+                setUsername(selected);
+                setShowSuggestions(false);
 
-                    if (submittedUsername !== user.login) {
-                      setSubmittedUsername(user.login);
-                    } else {
-                      refetch();
-                    }
-                  }}
-                >
-                  <img
-                    className='avatar-xs'
-                    src={user.avatar_url}
-                    alt={user.login}
-                  />{' '}
-                  {user.login}
-                </li>
-              ))}
-            </ul>
+                if (submittedUsername !== selected) {
+                  setSubmittedUsername(selected);
+                } else {
+                  refetch();
+                }
+                setRecentUsers((prev) => {
+                  const updatedUsers = [
+                    selected,
+                    ...prev.filter((user) => user !== selected),
+                  ];
+                  return updatedUsers.slice(0, 5);
+                });
+              }}
+            />
           )}
         </div>
         <button type='submit' className='btn'>
