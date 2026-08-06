@@ -33,12 +33,59 @@ export const checkIfFollowingUser = async (username) => {
       },
     },
   );
+
   if (res.status === 204) {
     return true; // Following
   } else if (res.status === 404) {
     return false; // Not following
   } else {
     const errorData = await res.json().catch(() => null);
-    throw new Error('Failed to check following status' || errorData?.message);
+    throw new Error(errorData?.message || 'Failed to check following status');
   }
 };
+
+// Follow user on Github
+export const followGithubUser = async (username) => {
+  const res = await fetch(
+    `${import.meta.env.VITE_GITHUB_API_URL}/user/following/${username}`,
+    {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${import.meta.env.VITE_GITHUB_API_TOKEN}`,
+        Accept: 'application/vnd.github+json',
+        'Content-Type': 'application/json',
+      },
+    },
+  );
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.message || 'Failed to follow user');
+  }
+
+  return true;
+};
+
+// Unfollow user on Github
+export const unfollowGithubUser = async (username) => {
+  const res = await fetch(
+    `${import.meta.env.VITE_GITHUB_API_URL}/user/following/${username}`,
+    {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${import.meta.env.VITE_GITHUB_API_TOKEN}`,
+        Accept: 'application/vnd.github+json',
+        'Content-Type': 'application/json',
+      },
+    },
+  );
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => null);
+    throw new Error(errorData?.message || 'Failed to unfollow user');
+  }
+
+  return true;
+};
+
+

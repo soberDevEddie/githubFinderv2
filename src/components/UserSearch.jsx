@@ -52,6 +52,10 @@ const UserSearch = () => {
     localStorage.setItem('recentUsers', JSON.stringify(recentUsers));
   }, [recentUsers]);
 
+  const handleClearRecentUsers = () => {
+    setRecentUsers([]);
+  };
+
   return (
     <>
       <form className='form' onSubmit={handleSubmit}>
@@ -106,6 +110,7 @@ const UserSearch = () => {
             setUsername(username);
             setSubmittedUsername(username);
           }}
+          onClearAll={handleClearRecentUsers}
         />
       )}
     </>
